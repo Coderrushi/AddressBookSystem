@@ -25,11 +25,6 @@ namespace AddressBookSystem
             Name = name;
             Contacts = new List<Contact>();
         }
-        public void AddContact(Contact contact)
-        {
-            Contacts.Add(contact);
-            Console.WriteLine("Contact added successfully to {0} ", Name);
-        }
         public void EditDetails()
         {
             Console.WriteLine("Enter the first name of the contact to edit: ");
@@ -194,7 +189,23 @@ namespace AddressBookSystem
                 Console.WriteLine("Error: Invalid input format, please try again");
             }
         }
-
+        public void AddContact(Contact contact)
+        {
+            if (!Contacts.Contains(contact))
+            {
+                Contacts.Add(contact);
+                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} added successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} already exists");
+            }
+        }
+        public IEnumerable<Contact> SearchByCityOrState(string location)
+        {
+            return Contacts.Where(c => c.City.Equals(location, StringComparison.OrdinalIgnoreCase) ||
+                          c.State.Equals(location, StringComparison.OrdinalIgnoreCase));
+        }
     }
     internal class AddressBookManager
     {
@@ -313,6 +324,34 @@ namespace AddressBookSystem
                 Console.WriteLine("Address Book '{0}' does not exist.", addressBookName);
             }
         }
+        public void AddAddressBook(string name, AddMultipleAddressBook addressBook)
+        {
+            if (!addressBooks.ContainsKey(name))
+            {
+                addressBooks[name] = addressBook;
+                Console.WriteLine($"AddressBook '{name}' added successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Address Book '{name}' already exists");
+            }
+        }
+        public static void SearchAcrossaddressBooks(string location)
+        {
+            Console.WriteLine($"Searching for contacts in '{location}' across all address books: ");
+            foreach (var addressBookEntry in addressBooks)
+            {
+                var results = addressBookEntry.Value.SearchByCityOrState(location).ToList();
+                if (results.Any())
+                {
+                    Console.WriteLine($"\nAddress Book: {addressBookEntry.Key}");
+                    foreach (var contact in results)
+                    {
+                        Console.WriteLine(contact);
+                    }
+                }
+            }
+        }
     }
 
     internal class AddressBookMain
@@ -328,7 +367,8 @@ namespace AddressBookSystem
                 Console.WriteLine("4: Delete conatct from address book");
                 Console.WriteLine("5: Display address books");
                 Console.WriteLine("6: Display contacts in address book");
-                Console.WriteLine("7: Exit");
+                Console.WriteLine("7: Search contacts by city or state");
+                Console.WriteLine("8: Exit");
                 Console.WriteLine("Enter your choice");
                 int choice = int.Parse(Console.ReadLine()); 
                 switch(choice)
@@ -350,6 +390,14 @@ namespace AddressBookSystem
                         break;
                     case 6:
                         AddressBookManager.DisplayContactsInAddressBook("Family");
+                        break;
+                    case 7:
+                        Console.WriteLine("\nEnter a city or state to search across all address books:");
+                        string location = Console.ReadLine();
+                        AddressBookManager.SearchAcrossaddressBooks(location);
+                        break;
+                    case 8:
+                        Environment.Exit(0);
                         break;
                     default:
                         Console.WriteLine("Enter valid input");
