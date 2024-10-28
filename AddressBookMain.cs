@@ -39,6 +39,73 @@ namespace AddressBookSystem
                 Console.WriteLine("Contact could not be added due to invalid information.");
             }
         }
+        public static void EditDetails()
+        {
+            Console.WriteLine("Enter your first name: ");
+            string inFirstName = Console.ReadLine();
+            Console.WriteLine("Enter your last name: ");
+            string inLastName = Console.ReadLine();
+            if (inFirstName == "Hrushikesh" || inLastName == "Zarekar")
+            {
+                Console.WriteLine("Enter 1: to edit Phonenumber:");
+                Console.WriteLine("Enter 2: to edit Email:");
+                Console.WriteLine("Enter 3: to edit City:");
+                int choice = int.Parse(Console.ReadLine());
+                if (choice == 1)
+                {
+                    Console.WriteLine("Enter new Phonenumber: ");
+                    string updated_phNum = Console.ReadLine();
+                    Regex rePhNum = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9] {2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
+                    if (rePhNum.IsMatch(updated_phNum))
+                    {
+                        Console.WriteLine("Phone number updated successfully!");
+                        Console.WriteLine("Update phone number: {0}", updated_phNum);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Sorry Could not update phone number (input is not in required format");
+                    }
+                }
+                else if (choice == 2)
+                {
+                    Console.WriteLine("Enter new Email: ");
+                    string updated_email = Console.ReadLine();
+                    Regex reEmail = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+                    if (reEmail.IsMatch(updated_email))
+                    {
+                        Console.WriteLine("Email Id updated successfully!");
+                        Console.WriteLine("Udated Email Id: {0}", updated_email);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Sorry Could not update Email Id (input is not in required format");
+                    }
+                }
+                else if (choice == 3)
+                {
+                    Console.WriteLine("Enter new City name: ");
+                    string updated_city = Console.ReadLine();
+                    Regex reCity = new Regex(@"(^[a-zA-Z\s]+$)");
+                    if (reCity.IsMatch(updated_city))
+                    {
+                        Console.WriteLine("City name updated successfully!");
+                        Console.WriteLine("Updated City name: {0}", updated_city);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Sorry Could not update City name (input is not in required format");
+                    }
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Incorrect data entered..");
+            }
+        }
         private static bool ValidateAndPrint(string fieldName, string fieldValue, Func<string, bool> validationMethod)
         {
             if (validationMethod(fieldValue))
