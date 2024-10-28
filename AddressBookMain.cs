@@ -16,226 +16,253 @@ namespace AddressBookSystem
         public override int GetHashCode() => HashCode.Combine(FirstName.ToLower(), LastName.ToLower());
         public override string ToString() => $"{FirstName} {LastName}, {PhoneNumber}, {EmailId}, {City}, {State}";
     }
-
-    internal class AddressBookManager
+    internal class AddMultipleAddressBook
     {
-        public static List<Contact> Contacts = new List<Contact>();
-        public static void AddNewContact()
+        public string Name { get; set; }
+        public List<Contact> Contacts { get; set; } = new List<Contact>();
+        public AddMultipleAddressBook(string name)
         {
-            Contact newContact = new Contact();
-            Console.WriteLine("Enter your first name: ");
+            Name = name;
+            Contacts = new List<Contact>();
+        }
+        public void AddContact(Contact contact)
+        {
+            Contacts.Add(contact);
+            Console.WriteLine("Contact added successfully to {0} ", Name);
+        }
+        public void EditDetails()
+        {
+            Console.WriteLine("Enter the first name of the contact to edit: ");
             string firstName = Console.ReadLine();
-            Console.WriteLine("Enter your last name: ");
+            Console.WriteLine("Enter the last name of the contact to edit: ");
             string lastName = Console.ReadLine();
-            Console.WriteLine("Enter your phone number: ");
-            string phoneNumber = Console.ReadLine();
-            Console.WriteLine("Enter your email Id: ");
-            string emailId = Console.ReadLine();
-            Console.WriteLine("Enter your city: ");
-            string city = Console.ReadLine();
-            Console.WriteLine("Enter your state: ");
-            string state = Console.ReadLine();
-            Console.WriteLine("Enter your pincode: ");
-            string pinCode = Console.ReadLine();
 
-            if (ValidateAndPrint("First name", newContact.FirstName, ValidateName) &&
-            ValidateAndPrint("Last name", newContact.LastName, ValidateName) &&
-            ValidateAndPrint("Phone number", newContact.PhoneNumber, ValidatePhoneNumber) &&
-            ValidateAndPrint("Email Id", newContact.EmailId, ValidateEmail) &&
-            ValidateAndPrint("City", newContact.City, ValidateCityOrState) &&
-            ValidateAndPrint("State", newContact.State, ValidateCityOrState) &&
-            ValidateAndPrint("Pincode", newContact.PinCode, ValidatePincode))
+            Contact contact = Contacts.Find(c => c.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) && c.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase));
+
+            if (contact != null)
             {
-                Contacts.Add(newContact);
-                Console.WriteLine("Contact added successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Contact could not be added due to invalid information.");
-            }
-        }
-        public static void EditDetails()
-        {
-            Console.WriteLine("Enter your first name: ");
-            string inFirstName = Console.ReadLine();
-            Console.WriteLine("Enter your last name: ");
-            string inLastName = Console.ReadLine();
-            if (inFirstName == "Hrushikesh" || inLastName == "Zarekar")
-            {
-                Console.WriteLine("Enter 1: to edit Phonenumber:");
-                Console.WriteLine("Enter 2: to edit Email:");
-                Console.WriteLine("Enter 3: to edit City:");
+                Console.WriteLine("Select detail to edit:");
+                Console.WriteLine("1. Phone Number");
+                Console.WriteLine("2. Email");
+                Console.WriteLine("3. City");
+                Console.WriteLine("4. Exit");
+
                 int choice = int.Parse(Console.ReadLine());
-                if (choice == 1)
+                switch (choice)
                 {
-                    Console.WriteLine("Enter new Phonenumber: ");
-                    string updated_phNum = Console.ReadLine();
-                    Regex rePhNum = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9] {2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
-                    if (rePhNum.IsMatch(updated_phNum))
-                    {
-                        Console.WriteLine("Phone number updated successfully!");
-                        Console.WriteLine("Update phone number: {0}", updated_phNum);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Sorry Could not update phone number (input is not in required format");
-                    }
-                }
-                else if (choice == 2)
-                {
-                    Console.WriteLine("Enter new Email: ");
-                    string updated_email = Console.ReadLine();
-                    Regex reEmail = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
-                    if (reEmail.IsMatch(updated_email))
-                    {
-                        Console.WriteLine("Email Id updated successfully!");
-                        Console.WriteLine("Udated Email Id: {0}", updated_email);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Sorry Could not update Email Id (input is not in required format");
-                    }
-                }
-                else if (choice == 3)
-                {
-                    Console.WriteLine("Enter new City name: ");
-                    string updated_city = Console.ReadLine();
-                    Regex reCity = new Regex(@"(^[a-zA-Z\s]+$)");
-                    if (reCity.IsMatch(updated_city))
-                    {
-                        Console.WriteLine("City name updated successfully!");
-                        Console.WriteLine("Updated City name: {0}", updated_city);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Sorry Could not update City name (input is not in required format");
-                    }
-                }
-                else
-                {
-                    Environment.Exit(0);
+                    case 1:
+                        Console.WriteLine("Enter new phone number: ");
+                        string newPhone = Console.ReadLine();
+                        if (Regex.IsMatch(newPhone, @"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)"))
+                        {
+                            contact.PhoneNumber = newPhone;
+                            Console.WriteLine("Phone number updated successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid phone number format.");
+                        }
+                        break;
+
+                    case 2:
+                        Console.WriteLine("Enter new email: ");
+                        string newEmail = Console.ReadLine();
+                        if (Regex.IsMatch(newEmail, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z"))
+                        {
+                            contact.EmailId = newEmail;
+                            Console.WriteLine("Email updated successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid email format.");
+                        }
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Enter new city: ");
+                        string newCity = Console.ReadLine();
+                        if (Regex.IsMatch(newCity, @"(^[a-zA-Z\s]+$)"))
+                        {
+                            contact.City = newCity;
+                            Console.WriteLine("City updated successfully.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid city format.");
+                        }
+                        break;
+                    case 4:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
                 }
             }
             else
             {
-                Console.WriteLine("Incorrect data entered..");
+                Console.WriteLine("Contact not found.");
             }
         }
-        public static void DeleteDetails(string firstName, string lastName)
+        public void DeleteContact()
         {
-            if (firstName == "Hrushikesh" && lastName == "Zarekar")
+            Console.WriteLine("Enter the first name of the contact to delete: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter the last name of the contact to delete: ");
+            string lastName = Console.ReadLine();
+
+            Contact contact = Contacts.Find(c => c.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
+                                                 c.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase));
+
+            if (contact != null)
             {
-                Console.WriteLine("Are you sure you want to delete this contact?(yes/no)");
-                string choice = Console.ReadLine();
+                Console.WriteLine("Are you sure you want to delete this contact? (yes/no)");
+                string choice = Console.ReadLine().ToLower();
+
                 if (choice == "yes")
                 {
-                    Console.WriteLine("Contact Deleted Successfully!");
+                    Contacts.Remove(contact);
+                    Console.WriteLine("Contact deleted successfully!");
                 }
                 else
                 {
-                    Console.WriteLine("Contact Deletion Canceled");
+                    Console.WriteLine("Contact deletion canceled.");
                 }
             }
             else
             {
-                Console.WriteLine("Incorrect data entered..");
+                Console.WriteLine("Contact not found.");
             }
         }
-        public static void AddMultipleContacts()
+        public void DisplayContacts()
         {
-            Console.WriteLine("Enter your first name: ");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Enter your last name: ");
-            string lastName = Console.ReadLine();
-            Console.WriteLine("Enter your phone number: ");
-            string phoneNumber = Console.ReadLine();
-            Console.WriteLine("Enter your email Id: ");
-            string email = Console.ReadLine();
-            Console.WriteLine("Enter your city: ");
-            string city = Console.ReadLine();
-            Console.WriteLine("Enter your state: ");
-            string state = Console.ReadLine();
-            Console.WriteLine("Enter your pincode: ");
-            string pinCode = Console.ReadLine();
-            Regex nameRegex = new Regex(@"(^[a-zA-Z]+$)");
-            Regex phoneRegex = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
-            Regex emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
-            Regex cityStateRegex = new Regex(@"(^[a-zA-Z\s]+$)");
-            Regex pinRegex = new Regex(@"(^[0-9]{6}$)");
-            if (nameRegex.IsMatch(firstName) && nameRegex.IsMatch(lastName) && phoneRegex.IsMatch(phoneNumber)
-                && emailRegex.IsMatch(email) && cityStateRegex.IsMatch(city) && cityStateRegex.IsMatch(state) && pinRegex.IsMatch(pinCode))
-            {
-                Contact newContact = new Contact()
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    PhoneNumber = phoneNumber,
-                    EmailId = email,
-                    City = city,
-                    State = state,
-                    PinCode = pinCode
-                };
-                Contacts.Add(newContact);
-                Console.WriteLine("Contact added successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Entered information is not in required format**");
-            }
-        }
-        public static void DisplayContacts()
-        {
-            Console.WriteLine("\nContacts in Address Book:");
+            Console.WriteLine("\nContacts in Address Book '{0}':", Name);
             foreach (var contact in Contacts)
             {
-                Console.WriteLine("FirstName: {0}, LastName: {1}, Phone Number: {2}, Email: {3}, City: {4}, State: {5}, Pincode: {6}",
+                Console.WriteLine("First Name: {0}, Last Name: {1}, Phone: {2}, Email: {3}, City: {4}, State: {5}, Pincode: {6}",
                     contact.FirstName, contact.LastName, contact.PhoneNumber, contact.EmailId, contact.City, contact.State, contact.PinCode);
             }
         }
-        private static bool ValidateAndPrint(string fieldName, string fieldValue, Func<string, bool> validationMethod)
+    }
+    internal class AddressBookManager
+    {
+        private static Dictionary<string, AddMultipleAddressBook> addressBooks = new Dictionary<string, AddMultipleAddressBook>();
+        public static void CreateAddressBook()
         {
-            if (validationMethod(fieldValue))
+            Console.WriteLine("Enter the name of the new Address Book: ");
+            string bookName = Console.ReadLine();
+            if (!addressBooks.ContainsKey(bookName))
             {
-                Console.WriteLine($"Valid {fieldName}");
-                return true;
+                AddMultipleAddressBook newBook = new AddMultipleAddressBook(bookName);
+                addressBooks.Add(bookName, newBook);
+                Console.WriteLine("Address Book '{0}' created successfully!", bookName);
             }
             else
             {
-                Console.WriteLine($"Invalid {fieldName}");
-                return false;
+                Console.WriteLine("An address book with this name is already exists, please try differnet name");
             }
         }
-        private static bool ValidateName(string name)
+        public static void AddContactToAddressBook(string bookName)
         {
-            Regex reName = new Regex(@"(^[a-zA-Z]+$)");
-            return reName.IsMatch(name);
+            if (addressBooks.ContainsKey(bookName))
+            {
+                Console.WriteLine("Adding a contact to Addess Book '{0}'", bookName);
+                Console.WriteLine("Enter your first name: ");
+                string firstName = Console.ReadLine();
+                Console.WriteLine("Enter your last name: ");
+                string lastName = Console.ReadLine();
+                Console.WriteLine("Enter your phone number: ");
+                string phoneNumber = Console.ReadLine();
+                Console.WriteLine("Enter your email Id: ");
+                string email = Console.ReadLine();
+                Console.WriteLine("Enter your city: ");
+                string city = Console.ReadLine();
+                Console.WriteLine("Enter your state: ");
+                string state = Console.ReadLine();
+                Console.WriteLine("Enter your pincode: ");
+                string pinCode = Console.ReadLine();
+                Regex nameRegex = new Regex(@"(^[a-zA-Z]+$)");
+                Regex phoneRegex = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
+                Regex emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+                Regex cityStateRegex = new Regex(@"(^[a-zA-Z\s]+$)");
+                Regex pinRegex = new Regex(@"(^[0-9]{6}$)");
+                if (nameRegex.IsMatch(firstName) && nameRegex.IsMatch(lastName) && phoneRegex.IsMatch(phoneNumber)
+                    && emailRegex.IsMatch(email) && cityStateRegex.IsMatch(city) && cityStateRegex.IsMatch(state) && pinRegex.IsMatch(pinCode))
+                {
+                    Contact newContact = new Contact()
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        PhoneNumber = phoneNumber,
+                        EmailId = email,
+                        City = city,
+                        State = state,
+                        PinCode = pinCode
+                    };
+                    addressBooks[bookName].AddContact(newContact);
+                }
+                else
+                {
+                    Console.WriteLine("Entered information is not in required format**");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No address book found with the name '{0}'", bookName);
+            }
         }
-
-        private static bool ValidatePhoneNumber(string phoneNumber)
+        public static void EditContactInAddressBook()
         {
-            Regex rePhNumber = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
-            return rePhNumber.IsMatch(phoneNumber);
-        }
+            Console.WriteLine("Enter the name of the Address Book to edit a contact: ");
+            string addressBookName = Console.ReadLine();
 
-        private static bool ValidateEmail(string email)
+            if (addressBooks.ContainsKey(addressBookName))
+            {
+                addressBooks[addressBookName].EditDetails();
+            }
+            else
+            {
+                Console.WriteLine("Address Book '{0}' does not exist.", addressBookName);
+            }
+        }
+        public static void DeleteContactInAddressBook()
         {
-            Regex reEmail = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
-            return reEmail.IsMatch(email);
-        }
+            Console.WriteLine("Enter the name of the Address Book to delete a contact from: ");
+            string addressBookName = Console.ReadLine();
 
-        private static bool ValidateCityOrState(string value)
+            if (addressBooks.ContainsKey(addressBookName))
+            {
+                addressBooks[addressBookName].DeleteContact();
+            }
+            else
+            {
+                Console.WriteLine("Address Book '{0}' does not exist.", addressBookName);
+            }
+        }
+        public static void DisplayAddressBooks()
         {
-            Regex regex1 = new Regex(@"(^[a-zA-Z\s]+$)");
-            return regex1.IsMatch(value);
+            Console.WriteLine("\nAvailable Address Books:");
+            foreach (var bookName in addressBooks.Keys)
+            {
+                Console.WriteLine("Address Book: " + bookName);
+            }
         }
-
-        private static bool ValidatePincode(string pinCode)
+        public static void DisplayContactsInAddressBook(string bookName)
         {
-            Regex regex2 = new Regex(@"(^[0-9]{6}$)");
-            return regex2.IsMatch(pinCode);
-        }
+            Console.WriteLine("Enter the name of the Address Book to display contacts: ");
+            string addressBookName = Console.ReadLine();
 
+            if (addressBooks.ContainsKey(addressBookName))
+            {
+                addressBooks[addressBookName].DisplayContacts();
+            }
+            else
+            {
+                Console.WriteLine("Address Book '{0}' does not exist.", addressBookName);
+            }
+        }
     }
+
     internal class AddressBookMain
     {
         static void Main(string[] args)
@@ -243,29 +270,34 @@ namespace AddressBookSystem
             Console.WriteLine("Welcome to the Address Book System");
             while (true)
             {
-                Console.WriteLine("1: Add new contact");
-                Console.WriteLine("2: Edit contact details");
-                Console.WriteLine("3: Delete contact");
-                Console.WriteLine("4: Exit");
+                Console.WriteLine("1: Create new address book");
+                Console.WriteLine("2: Add contact to address book");
+                Console.WriteLine("3: Edit contact in address book");
+                Console.WriteLine("4: Delete conatct from address book");
+                Console.WriteLine("5: Display address books");
+                Console.WriteLine("6: Display contacts in address book");
+                Console.WriteLine("7: Exit");
                 Console.WriteLine("Enter your choice");
                 int choice = int.Parse(Console.ReadLine()); 
                 switch(choice)
                 {
                     case 1:
-                        AddressBookManager.AddNewContact();
+                        AddressBookManager.CreateAddressBook();
                         break;
                     case 2:
-                        AddressBookManager.EditDetails();
+                        AddressBookManager.AddContactToAddressBook("Family");
                         break;
                     case 3:
-                        Console.WriteLine("Enter your first name");
-                        string firstName = Console.ReadLine();
-                        Console.WriteLine("Enter your last name");
-                        string lastName = Console.ReadLine();
-                        AddressBookManager.DeleteDetails(firstName, lastName);
+                        AddressBookManager.EditContactInAddressBook();
                         break;
                     case 4:
-                        Environment.Exit(0);
+                        AddressBookManager.DeleteContactInAddressBook();
+                        break;
+                    case 5:
+                        AddressBookManager.DisplayAddressBooks();
+                        break;
+                    case 6:
+                        AddressBookManager.DisplayContactsInAddressBook("Family");
                         break;
                     default:
                         Console.WriteLine("Enter valid input");
