@@ -17,12 +17,27 @@ namespace AddressBookSystem
         public override string ToString() => $"{FirstName} {LastName}, {PhoneNumber}, {EmailId}, {City}, {State}";
     }
 
-    internal class UC1_AddNewContact
+    internal class AddressBookManager
     {
         public static List<Contact> Contacts = new List<Contact>();
         public static void AddNewContact()
         {
             Contact newContact = new Contact();
+            Console.WriteLine("Enter your first name: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter your last name: ");
+            string lastName = Console.ReadLine();
+            Console.WriteLine("Enter your phone number: ");
+            string phoneNumber = Console.ReadLine();
+            Console.WriteLine("Enter your email Id: ");
+            string emailId = Console.ReadLine();
+            Console.WriteLine("Enter your city: ");
+            string city = Console.ReadLine();
+            Console.WriteLine("Enter your state: ");
+            string state = Console.ReadLine();
+            Console.WriteLine("Enter your pincode: ");
+            string pinCode = Console.ReadLine();
+
             if (ValidateAndPrint("First name", newContact.FirstName, ValidateName) &&
             ValidateAndPrint("Last name", newContact.LastName, ValidateName) &&
             ValidateAndPrint("Phone number", newContact.PhoneNumber, ValidatePhoneNumber) &&
@@ -106,6 +121,26 @@ namespace AddressBookSystem
                 Console.WriteLine("Incorrect data entered..");
             }
         }
+        public static void DeleteDetails(string firstName, string lastName)
+        {
+            if (firstName == "Hrushikesh" && lastName == "Zarekar")
+            {
+                Console.WriteLine("Are you sure you want to delete this contact?(yes/no)");
+                string choice = Console.ReadLine();
+                if (choice == "yes")
+                {
+                    Console.WriteLine("Contact Deleted Successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Contact Deletion Canceled");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Incorrect data entered..");
+            }
+        }
         private static bool ValidateAndPrint(string fieldName, string fieldValue, Func<string, bool> validationMethod)
         {
             if (validationMethod(fieldValue))
@@ -155,22 +190,39 @@ namespace AddressBookSystem
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Address Book System");
-            Contact newContact = new Contact();
-            Console.WriteLine("Enter your first name: ");
-            string firstName = Console.ReadLine();
-            Console.WriteLine("Enter your last name: ");
-            string lastName = Console.ReadLine();
-            Console.WriteLine("Enter your phone number: ");
-            string phoneNumber = Console.ReadLine();
-            Console.WriteLine("Enter your email Id: ");
-            string emailId = Console.ReadLine();
-            Console.WriteLine("Enter your city: ");
-            string city = Console.ReadLine();
-            Console.WriteLine("Enter your state: ");
-            string state = Console.ReadLine();
-            Console.WriteLine("Enter your pincode: ");
-            string pinCode = Console.ReadLine();
-            UC1_AddNewContact.AddNewContact();
+            while (true)
+            {
+                Console.WriteLine("1: Add new contact");
+                Console.WriteLine("2: Edit contact details");
+                Console.WriteLine("3: Delete contact");
+                Console.WriteLine("4: Exit");
+                Console.WriteLine("Enter your choice");
+                int choice = int.Parse(Console.ReadLine()); 
+                switch(choice)
+                {
+                    case 1:
+                        AddressBookManager.AddNewContact();
+                        break;
+                    case 2:
+                        AddressBookManager.EditDetails();
+                        break;
+                    case 3:
+                        Console.WriteLine("Enter your first name");
+                        string firstName = Console.ReadLine();
+                        Console.WriteLine("Enter your last name");
+                        string lastName = Console.ReadLine();
+                        AddressBookManager.DeleteDetails(firstName, lastName);
+                        break;
+                    case 4:
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("Enter valid input");
+                        break;
+                }
+
+            }
+            
         }
     }
 }
