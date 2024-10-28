@@ -20,10 +20,23 @@ namespace AddressBookSystem
     {
         public string Name { get; set; }
         public List<Contact> Contacts { get; set; } = new List<Contact>();
+        public IEnumerable<Contact> contacts => Contacts;
         public AddMultipleAddressBook(string name)
         {
             Name = name;
             Contacts = new List<Contact>();
+        }
+        public void AddContact(Contact contact)
+        {
+            if (!Contacts.Contains(contact))
+            {
+                Contacts.Add(contact);
+                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} added successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} already exists");
+            }
         }
         public void EditDetails()
         {
@@ -189,18 +202,7 @@ namespace AddressBookSystem
                 Console.WriteLine("Error: Invalid input format, please try again");
             }
         }
-        public void AddContact(Contact contact)
-        {
-            if (!Contacts.Contains(contact))
-            {
-                Contacts.Add(contact);
-                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} added successfully");
-            }
-            else
-            {
-                Console.WriteLine($"Contact {contact.FirstName} {contact.LastName} already exists");
-            }
-        }
+        
         public IEnumerable<Contact> SearchByCityOrState(string location)
         {
             return Contacts.Where(c => c.City.Equals(location, StringComparison.OrdinalIgnoreCase) ||
@@ -210,6 +212,80 @@ namespace AddressBookSystem
     internal class AddressBookManager
     {
         private static Dictionary<string, AddMultipleAddressBook> addressBooks = new Dictionary<string, AddMultipleAddressBook>();
+        public static Dictionary<string, List<Contact>> cityDict = new Dictionary<string, List<Contact>>();
+        public static Dictionary<string, List<Contact>> stateDict = new Dictionary<string, List<Contact>>();
+
+        public void AddAddressBook(string name, AddMultipleAddressBook addressBook)
+        {
+            if (!addressBooks.ContainsKey(name))
+            {
+                addressBooks[name] = addressBook;
+                foreach (var contact in addressBook.Contacts)
+                {
+                    AddContactToCityAndStateDicts(contact);
+                }
+                Console.WriteLine($"Address Book '{name}' added successfully");
+            }
+            else
+            {
+                Console.WriteLine($"Address Book '{name}' already exists");
+            }
+        }
+        public void AddContact(string addressBookName, Contact contact)
+        {
+            if (addressBooks.ContainsKey(addressBookName))
+            {
+                addressBooks[addressBookName].AddContact(contact);
+                AddContactToCityAndStateDicts(contact);
+            }
+            else
+            {
+                Console.WriteLine($"Address Book '{addressBookName}' not found.");
+            }
+        }
+        private void AddContactToCityAndStateDicts(Contact contact)
+        {
+            if (!cityDict.ContainsKey(contact.City))
+            {
+                cityDict[contact.City] = new List<Contact>();
+            }
+            cityDict[contact.City].Add(contact);
+            if (!stateDict.ContainsKey(contact.State))
+            {
+                stateDict[contact.State] = new List<Contact>();
+            }
+            stateDict[contact.State].Add(contact);
+        }
+        public static void ViewPersonsByCity(string city)
+        {
+            Console.WriteLine($"\nPersons in City '{city}':");
+            if (cityDict.ContainsKey(city))
+            {
+                foreach (var contact in cityDict[city])
+                {
+                    Console.WriteLine(contact);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No persons found in this city");
+            }
+        }
+        public static void ViewPersonsByState(string state)
+        {
+            Console.WriteLine($"\nPersons in State '{state}':");
+            if (stateDict.ContainsKey(state))
+            {
+                foreach (var contact in stateDict[state])
+                {
+                    Console.WriteLine(contact);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No persons found in this state");
+            }
+        }
         public static void CreateAddressBook()
         {
             Console.WriteLine("Enter the name of the new Address Book: ");
@@ -397,6 +473,16 @@ namespace AddressBookSystem
                         AddressBookManager.SearchAcrossaddressBooks(location);
                         break;
                     case 8:
+                        Console.WriteLine("\nEnter a city to view persons:");
+                        string city = Console.ReadLine();
+                        AddressBookManager.ViewPersonsByCity(city);
+                        break;
+                    case 9:
+                        Console.WriteLine("\nEnter a state to view persons:");
+                        string state = Console.ReadLine();
+                        AddressBookManager.ViewPersonsByState(state);
+                        break;
+                    case 10:
                         Environment.Exit(0);
                         break;
                     default:
