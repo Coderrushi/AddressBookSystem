@@ -286,6 +286,16 @@ namespace AddressBookSystem
                 Console.WriteLine("No persons found in this state");
             }
         }
+        public static void GetContactCountByCity(string city)
+        {
+            int count = cityDict.ContainsKey(city) ? cityDict[city].Count : 0;
+            Console.WriteLine($"\nNumber of persons in City '{city}': {count}");
+        }
+        public static void GetContactCountByState(string state)
+        {
+            int count = stateDict.ContainsKey(state) ? stateDict[state].Count : 0;
+            Console.WriteLine($"\nNumber of persons in State '{state}': {count}");
+        }
         public static void CreateAddressBook()
         {
             Console.WriteLine("Enter the name of the new Address Book: ");
@@ -400,18 +410,7 @@ namespace AddressBookSystem
                 Console.WriteLine("Address Book '{0}' does not exist.", addressBookName);
             }
         }
-        public void AddAddressBook(string name, AddMultipleAddressBook addressBook)
-        {
-            if (!addressBooks.ContainsKey(name))
-            {
-                addressBooks[name] = addressBook;
-                Console.WriteLine($"AddressBook '{name}' added successfully");
-            }
-            else
-            {
-                Console.WriteLine($"Address Book '{name}' already exists");
-            }
-        }
+        
         public static void SearchAcrossaddressBooks(string location)
         {
             Console.WriteLine($"Searching for contacts in '{location}' across all address books: ");
@@ -444,7 +443,11 @@ namespace AddressBookSystem
                 Console.WriteLine("5: Display address books");
                 Console.WriteLine("6: Display contacts in address book");
                 Console.WriteLine("7: Search contacts by city or state");
-                Console.WriteLine("8: Exit");
+                Console.WriteLine("8: View persons by city");
+                Console.WriteLine("9: View persons by state");
+                Console.WriteLine("10: View count of persons by city");
+                Console.WriteLine("11: View count of persons by state");
+                Console.WriteLine("12: Exit");
                 Console.WriteLine("Enter your choice");
                 int choice = int.Parse(Console.ReadLine()); 
                 switch(choice)
@@ -483,6 +486,18 @@ namespace AddressBookSystem
                         AddressBookManager.ViewPersonsByState(state);
                         break;
                     case 10:
+                        Console.WriteLine("\nEnter a city to view persons:");
+                        string in_City = Console.ReadLine();
+                        AddressBookManager.ViewPersonsByCity(in_City);
+                        AddressBookManager.GetContactCountByCity(in_City);
+                        break;
+                     case 11:
+                        Console.WriteLine("\nEnter a state to view persons:");
+                        string in_State = Console.ReadLine();
+                        AddressBookManager.ViewPersonsByState(in_State);
+                        AddressBookManager.GetContactCountByState(in_State);
+                        break;
+                    case 12:
                         Environment.Exit(0);
                         break;
                     default:
