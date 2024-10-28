@@ -143,6 +143,58 @@ namespace AddressBookSystem
                     contact.FirstName, contact.LastName, contact.PhoneNumber, contact.EmailId, contact.City, contact.State, contact.PinCode);
             }
         }
+        public void NoDuplicateEntryInAddressBook()
+        {
+            Console.WriteLine("Enter your first name: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter your last name: ");
+            string lastName = Console.ReadLine();
+            if (Contacts.Any(c => c.FirstName.Equals(firstName, StringComparison.OrdinalIgnoreCase) &&
+                              c.LastName.Equals(lastName, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine("This contact already exists in the address book. Duplicate entry is not allowed");
+                return;
+            }
+            Console.WriteLine("Enter your phone number: ");
+            string phoneNumber = Console.ReadLine();
+            Console.WriteLine("Enter your email Id: ");
+            string emailId = Console.ReadLine();
+            Console.WriteLine("Enter your city: ");
+            string city = Console.ReadLine();
+            Console.WriteLine("Enter your state: ");
+            string state = Console.ReadLine();
+            Console.WriteLine("Enter your pincode: ");
+            string pinCode = Console.ReadLine();
+
+            Regex nameRegex = new Regex(@"(^[a-zA-Z]+$)");
+            Regex phoneRegex = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
+            Regex emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+            Regex cityStateRegex = new Regex(@"(^[a-zA-Z\s]+$)");
+            Regex pinRegex = new Regex(@"(^[0-9]{6}$)");
+
+            if (nameRegex.IsMatch(firstName) && nameRegex.IsMatch(lastName) && phoneRegex.IsMatch(phoneNumber) &&
+            emailRegex.IsMatch(emailId) && cityStateRegex.IsMatch(city) && cityStateRegex.IsMatch(state) &&
+            pinRegex.IsMatch(pinCode))
+            {
+                Contact newContact = new Contact
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PhoneNumber = phoneNumber,
+                    EmailId = emailId,
+                    City = city,
+                    State = state,
+                    PinCode = pinCode
+                };
+                Contacts.Add(newContact);
+                Console.WriteLine("Contact added successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Error: Invalid input format, please try again");
+            }
+        }
+
     }
     internal class AddressBookManager
     {
