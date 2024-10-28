@@ -141,6 +141,57 @@ namespace AddressBookSystem
                 Console.WriteLine("Incorrect data entered..");
             }
         }
+        public static void AddMultipleContacts()
+        {
+            Console.WriteLine("Enter your first name: ");
+            string firstName = Console.ReadLine();
+            Console.WriteLine("Enter your last name: ");
+            string lastName = Console.ReadLine();
+            Console.WriteLine("Enter your phone number: ");
+            string phoneNumber = Console.ReadLine();
+            Console.WriteLine("Enter your email Id: ");
+            string email = Console.ReadLine();
+            Console.WriteLine("Enter your city: ");
+            string city = Console.ReadLine();
+            Console.WriteLine("Enter your state: ");
+            string state = Console.ReadLine();
+            Console.WriteLine("Enter your pincode: ");
+            string pinCode = Console.ReadLine();
+            Regex nameRegex = new Regex(@"(^[a-zA-Z]+$)");
+            Regex phoneRegex = new Regex(@"(^[0-9]{10}$)|(^\+[0-9]{2}\s+[0-9]{2}[0-9]{8}$)|(^[0-9]{3}-[0-9]{4}-[0-9]{4}$)");
+            Regex emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+            Regex cityStateRegex = new Regex(@"(^[a-zA-Z\s]+$)");
+            Regex pinRegex = new Regex(@"(^[0-9]{6}$)");
+            if (nameRegex.IsMatch(firstName) && nameRegex.IsMatch(lastName) && phoneRegex.IsMatch(phoneNumber)
+                && emailRegex.IsMatch(email) && cityStateRegex.IsMatch(city) && cityStateRegex.IsMatch(state) && pinRegex.IsMatch(pinCode))
+            {
+                Contact newContact = new Contact()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PhoneNumber = phoneNumber,
+                    EmailId = email,
+                    City = city,
+                    State = state,
+                    PinCode = pinCode
+                };
+                Contacts.Add(newContact);
+                Console.WriteLine("Contact added successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Entered information is not in required format**");
+            }
+        }
+        public static void DisplayContacts()
+        {
+            Console.WriteLine("\nContacts in Address Book:");
+            foreach (var contact in Contacts)
+            {
+                Console.WriteLine("FirstName: {0}, LastName: {1}, Phone Number: {2}, Email: {3}, City: {4}, State: {5}, Pincode: {6}",
+                    contact.FirstName, contact.LastName, contact.PhoneNumber, contact.EmailId, contact.City, contact.State, contact.PinCode);
+            }
+        }
         private static bool ValidateAndPrint(string fieldName, string fieldValue, Func<string, bool> validationMethod)
         {
             if (validationMethod(fieldValue))
